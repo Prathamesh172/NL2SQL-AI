@@ -1,0 +1,8 @@
+langgraph
+langchain
+sqlite3
+flask
+langchain_groq
+langchain_core
+langchain-core
+python-dotenv

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Natural Language to SQL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Container */
+        .landing-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            animation: fadeInUp 1.2s ease;
+        }
+
+        a.button {
+            display: inline-block;
+            background-color: #fff;
+            color: #2575fc;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            animation: fadeIn 1.5s ease;
+        }
+
+        a.button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
+        }
+
+        /* Features section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing-container">
+        <h1>Natural Language to SQL</h1>
+        <p>
+            Ever wondered if you could query your database using plain English? 
+            Upload any SQLite database and ask questions in natural language. 
+            Our AI converts your questions into SQL queries instantly!
+        </p>
+        <a href="/query-page" class="button"> Try It Now</a>
+
+        <!-- Features Section -->
+        <div class="features">
+            <div class="feature">
+                <h3>⚡ Fast</h3>
+                <p>Get SQL queries generated instantly from natural language.</p>
+            </div>
+            <div class="feature">
+                <h3>🤖 AI Powered</h3>
+                <p>Harness the power of LLMs to interpret your questions.</p>
+            </div>
+            <div class="feature">
+                <h3>📂 Easy Upload</h3>
+                <p>Upload your own SQLite database in just one click.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Built by <strong>Prathamesh</strong> | © 2025
+    </footer>
+</body>
+</html>

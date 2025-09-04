@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL Query App</title>
+    <style>
+        /* Reset and body */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Main container */
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        /* Hide default file input */
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Custom file upload button */
+        .custom-file-upload {
+            display: inline-block;
+            background-color: #fff;
+            color: #2575fc;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: #fff;
+            color: #2575fc;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            margin: 25px 0;
+        }
+
+        /* Query result card */
+        .result-box {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #ffebcd;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            text-align: center;
+        }
+
+        th {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        tr:nth-child(even) td {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* Inline message */
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SQL Query App</h1>
+
+        <!-- File Upload Section -->
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="database">Upload SQLite DB:</label><br>
+            <label for="database" class="custom-file-upload">Choose File</label>
+            <input type="file" name="database" id="database" required>
+            <button type="submit">Upload</button>
+            <div id="message"></div>
+        </form>
+
+        <hr>
+
+        <!-- Query Section -->
+        <form id="queryForm">
+            <input type="hidden" id="db_filename" name="db_filename">
+            <label for="query">Enter SQL Query:</label>
+            <textarea name="query" id="query" rows="4" required></textarea>
+            <button type="submit">Run Query</button>
+        </form>
+
+        <hr>
+
+        <h2>Query Result:</h2>
+        <div class="result-box">
+            <h3 id="sql-query-title"></h3>
+            <div id="result"></div>
+        </div>
+    </div>
+
+<script>
+    const uploadForm = document.getElementById('uploadForm');
+    const queryForm = document.getElementById('queryForm');
+    const resultEl = document.getElementById('result');
+    const sqlQueryTitle = document.getElementById('sql-query-title');
+    const dbFilenameInput = document.getElementById('db_filename');
+    const messageEl = document.getElementById('message');
+    const fileInput = document.getElementById('database');
+    const fileLabel = document.querySelector('.custom-file-upload');
+
+    function renderTable(columns, results) {
+        if (!results || results.length === 0) return "No results";
+
+        let table = `<table><tr>`;
+        columns.forEach(col => { table += `<th>${col}</th>`; });
+        table += `</tr>`;
+        results.forEach(row => {
+            table += `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
+        });
+        table += `</table>`;
+        return table;
+    }
+
+    // Show file name after selection
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileLabel.textContent = fileInput.files[0].name;
+        }
+    });
+
+    uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(uploadForm);
+        const res = await fetch('/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.db_filename) {
+            dbFilenameInput.value = data.db_filename;
+            messageEl.style.color = "lightgreen";
+            messageEl.textContent = data.message;
+        } else {
+            messageEl.style.color = "salmon";
+            messageEl.textContent = data.error || 'Upload failed';
+        }
+    });
+
+    queryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            db_filename: dbFilenameInput.value,
+            question: document.getElementById('query').value
+        };
+        const res = await fetch('/query', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.error) {
+            sqlQueryTitle.textContent = "Error";
+            resultEl.innerHTML = `<strong>${data.error}</strong>`;
+        } else {
+            sqlQueryTitle.textContent = `SQL: ${data.sql_query}`;
+            resultEl.innerHTML = renderTable(data.columns, data.results);
+        }
+    });
+</script>
+
+</body>
+</html>
