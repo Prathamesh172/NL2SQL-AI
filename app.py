@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-# ------------------- DB Utilities -------------------
+# ------------------- DB -------------------
 def get_tables_and_columns(db_path):
     """Fetch all tables and their columns from the SQLite DB"""
     with sqlite3.connect(db_path) as conn:
@@ -46,7 +46,7 @@ def run_sql(db_path, sql_query):
 
 
 
-# ------------------- LLM Utility -------------------
+# ------------------- LLM -------------------
 def get_sql_from_llm(schema, user_query):
     """Ask LLM to convert English question to SQL using the DB schema"""
     schema_str = "\n".join([
@@ -144,4 +144,5 @@ def query_db():
 
 
 if __name__ == "__main__":
+
     app.run(debug=True)
